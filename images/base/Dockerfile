@@ -52,7 +52,7 @@ RUN \
 COPY overlay /
 
 # Set entrypoint script
-ENTRYPOINT ["/entrypoint.sh"]
+#ENTRYPOINT ["/entrypoint.sh"]
 
 ARG IMAGE_SOURCE
 LABEL org.opencontainers.image.source $IMAGE_SOURCE

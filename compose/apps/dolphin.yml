@@ -1,0 +1,48 @@
+#########################
+# dolphin.yml
+#########################
+#
+# This container runs Dolphin-Emu
+
+services:
+  ####################
+  dolphin:
+    #image: andrewmackrodt/dolphin-emu-x11:latest
+    build:
+     context: ./images/dolphin
+     args:
+       BASE_IMAGE: ${BUILD_BASE_IMAGE}
+       BASE_APP_IMAGE: ${BUILD_BASE_APP_IMAGE}
+    runtime: ${DOCKER_RUNTIME}
+    privileged: true
+    network_mode: ${UDEVD_NETWORK}
+    volumes:
+      # Followings are needed in order to get joystick support
+      - /dev/input:/dev/input:ro
+      - udev:/run/udev/:ro
+      # some emulators need more than 64 MB of shared memory - see https://github.com/libretro/dolphin/issues/222
+      # TODO: why shm_size doesn't work ??????
+      - type: tmpfs
+        target: /dev/shm
+        tmpfs:
+          size: ${SHM_SIZE}
+      - ${XORG_SOCKET}:/tmp/.X11-unix
+      # Pulse socket, audio
+      - ${PULSE_SOCKET_HOST}:${PULSE_SOCKET_GUEST}
+      # If you have permission errors make sure to chomd ${id}:${id} ./local_state
+      - /srv/gow/dolphin/run:/run/user/1000
+      - /srv/games/wii:/wii
+      - /srv/gow/dolphin/data:/data
+      - /srv/gow/dolphin/config:/config
+    ipc: ${SHARED_IPC}  # Needed for MIT-SHM, removing this should cause a performance hit see https://github.com/jessfraz/dockerfiles/issues/359
+    env_file:
+      - config/common.env
+      - config/xorg.env
+      # run-gow: gpu_env  
+
+    environment:
+      # Which devices does GoW need to be able to use? The docker user will be
+      # added to the groups that own these devices, to help with permissions
+      # issues
+      # These values are the defaults, but you can add others if needed
+      GOW_REQUIRED_DEVICES: /dev/uinput /dev/input/event* /dev/dri/* /dev/snd/*

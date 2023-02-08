@@ -1,0 +1,47 @@
+services:
+  # ####################
+  # An example of running an unprivileged X11 app in this environment. It's
+  # also an example of running a 3rd-party container that wasn't necessarily
+  # designed with GoW in mind.
+  
+  pcsx2:
+    #depends_on:
+    #  - sunshine
+    #image: andrewmackrodt/pcsx2-x11
+    build:
+     context: ./images/pcsx2
+     args:
+       BASE_IMAGE: ${BUILD_BASE_IMAGE}
+       BASE_APP_IMAGE: ${BUILD_BASE_APP_IMAGE}
+    #runtime: /usr/local/bin/pcsx2-bootstrap
+    privileged: true
+    network_mode: ${UDEVD_NETWORK}
+    volumes:
+      # Followings are needed in order to get joystick support
+      - /dev/input:/dev/input:ro
+      - udev:/run/udev/:ro
+      # some emulators need more than 64 MB of shared memory - see https://github.com/libretro/dolphin/issues/222
+      # TODO: why shm_size doesn't work ??????
+      - type: tmpfs
+        target: /dev/shm
+        tmpfs:
+          size: ${SHM_SIZE}
+      - ${XORG_SOCKET}:/tmp/.X11-unix
+      # Pulse socket, audio
+      - ${PULSE_SOCKET_HOST}:${PULSE_SOCKET_GUEST}
+      # If you have permission errors make sure to chomd ${id}:${id} ./local_state
+      - /srv/gow/pcsx2/run:/run/user/1000
+      - /srv/games/ps2:/games
+      - /srv/gow/pcsx2/bios:/bios
+      - /srv/gow/pcsx2/data:/data
+      - /srv/gow/pcsx2/plugins:/plugins
+    env_file:
+      - config/common.env
+      - config/xorg.env
+    ipc: ${SHARED_IPC}  # Needed for MIT-SHM, removing this should cause a performance hit see https://github.com/jessfraz/dockerfiles/issues/359   
+    environment:
+      PGID: 1000
+      PUID: 1000
+      SUDO_NOPASSWD: 1
+      LOG_LEVEL: info
+      GOW_REQUIRED_DEVICES: /dev/uinput /dev/input/event* /dev/dri/* /dev/snd/*
