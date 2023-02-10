@@ -7,12 +7,12 @@
 services:
   ####################
   dolphin:
-    #image: andrewmackrodt/dolphin-emu-x11:latest
-    build:
-     context: ./images/dolphin
-     args:
-       BASE_IMAGE: ${BUILD_BASE_IMAGE}
-       BASE_APP_IMAGE: ${BUILD_BASE_APP_IMAGE}
+    image: andrewmackrodt/dolphin-emu-x11:latest
+    #build:
+    # context: ./images/dolphin
+    # args:
+    #   BASE_IMAGE: ${BUILD_BASE_IMAGE}
+    #   BASE_APP_IMAGE: ${BUILD_BASE_APP_IMAGE}
     runtime: ${DOCKER_RUNTIME}
     privileged: true
     network_mode: ${UDEVD_NETWORK}

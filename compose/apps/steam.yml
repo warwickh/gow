@@ -20,6 +20,7 @@ services:
       # Followings are needed in order to get joystick support
       - /dev/input:/dev/input:ro
       - udev:/run/udev:ro
+      - /etc/localtime:/etc/localtime:ro
       # Xorg socket in order to get the screen
       - ${XORG_SOCKET}:/tmp/.X11-unix
       # Pulse socket, audio

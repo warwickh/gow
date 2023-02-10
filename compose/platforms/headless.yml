@@ -24,6 +24,7 @@ services:
       # The xorg socket, it'll be populated when up and running
       - ${XORG_SOCKET}:/tmp/.X11-unix
       # run-gow: xorg_driver
+      - /etc/localtime:/etc/localtime:ro
 
     ipc: ${XORG_IPC} # Needed for MIT-SHM, removing this should cause a performance hit see https://github.com/jessfraz/dockerfiles/issues/359
 
