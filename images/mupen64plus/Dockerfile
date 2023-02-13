@@ -49,9 +49,9 @@ ADD https://github.com/dh4/mupen64plus-qt/releases/download/1.15/mupen64plus-qt_
 
 RUN tar -xpf /tmp/mupen64plus-qt_linux_1.15.tar.gz -C /usr/games --overwrite
 
-#RUN ln -s /usr/share/games/mupen64plus /data 
-#RUN ln -s /usr/lib/x86_64-linux-gnu/mupen64plus /plugins 
-#RUN ln -s /home/${UNAME}/.config/mupen64plus /config 
+RUN ln -s /usr/share/games/mupen64plus /data 
+RUN ln -s /usr/lib/x86_64-linux-gnu/mupen64plus /plugins 
+RUN ln -s /home/${UNAME}/.config/mupen64plus /config 
 
 WORKDIR $HOME
 USER ${UNAME}

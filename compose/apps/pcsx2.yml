@@ -13,35 +13,37 @@ services:
      args:
        BASE_IMAGE: ${BUILD_BASE_IMAGE}
        BASE_APP_IMAGE: ${BUILD_BASE_APP_IMAGE}
-    #runtime: /usr/local/bin/pcsx2-bootstrap
+    runtime: ${DOCKER_RUNTIME}
     privileged: true
     network_mode: ${UDEVD_NETWORK}
     volumes:
       # Followings are needed in order to get joystick support
       - /dev/input:/dev/input:ro
-      - udev:/run/udev/:ro
-      # some emulators need more than 64 MB of shared memory - see https://github.com/libretro/dolphin/issues/222
+      - udev:/run/udev:ro
+      - /etc/localtime:/etc/localtime:ro
+      # Xorg socket in order to get the screen
+      - ${XORG_SOCKET}:/tmp/.X11-unix
+      # Pulse socket, audio
+      - ${PULSE_SOCKET_HOST}:${PULSE_SOCKET_GUEST}
+      # Home directory: client, games, downloads, etc
+      - ${local_state}/:/home/retro/
+      - /srv/games:/home/retro/games
+      - /srv/gow/bios:/bios
+      # The following is needed by the webview otherwise you'll get Less than
+      # 64MB of free space in temporary directory
+      # (https://github.com/microsoft/vscode/issues/111729#issuecomment-737399692)
       # TODO: why shm_size doesn't work ??????
       - type: tmpfs
         target: /dev/shm
         tmpfs:
-          size: ${SHM_SIZE}
-      - ${XORG_SOCKET}:/tmp/.X11-unix
-      # Pulse socket, audio
-      - ${PULSE_SOCKET_HOST}:${PULSE_SOCKET_GUEST}
-      # If you have permission errors make sure to chomd ${id}:${id} ./local_state
-      - /srv/gow/pcsx2/run:/run/user/1000
-      - /srv/games/ps2:/games
-      - /srv/gow/pcsx2/bios:/bios
-      - /srv/gow/pcsx2/data:/data
-      - /srv/gow/pcsx2/plugins:/plugins
+            size: ${SHM_SIZE}
+    ipc: ${SHARED_IPC}  # Needed for MIT-SHM, removing this should cause a performance hit see https://github.com/jessfraz/dockerfiles/issues/359
+
     env_file:
       - config/common.env
       - config/xorg.env
-    ipc: ${SHARED_IPC}  # Needed for MIT-SHM, removing this should cause a performance hit see https://github.com/jessfraz/dockerfiles/issues/359   
+      # run-gow: gpu_env
+
     environment:
-      PGID: 1000
-      PUID: 1000
-      SUDO_NOPASSWD: 1
-      LOG_LEVEL: info
-      GOW_REQUIRED_DEVICES: /dev/uinput /dev/input/event* /dev/dri/* /dev/snd/*
+      PROTON_LOG: 1
+

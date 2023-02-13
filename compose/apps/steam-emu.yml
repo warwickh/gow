@@ -1,15 +1,15 @@
 #########################
-# steam.yml
+# steam-emu.yml
 #########################
 #
 # This container runs Steam
 
 services:
   ####################
-  steam:
+  steam-emu:
 #    image: ghcr.io/games-on-whales/steam:edge
     build:
-     context: ./images/steam
+     context: ./images/steam-emu
      args:
        BASE_IMAGE: ${BUILD_BASE_IMAGE}
        BASE_APP_IMAGE: ${BUILD_BASE_APP_IMAGE}
@@ -27,6 +27,8 @@ services:
       - ${PULSE_SOCKET_HOST}:${PULSE_SOCKET_GUEST}
       # Home directory: client, games, downloads, etc
       - ${local_state}/:/home/retro/
+      - /srv/games:/home/retro/games
+      - /srv/gow/bios:/bios
       # The following is needed by the webview otherwise you'll get Less than
       # 64MB of free space in temporary directory
       # (https://github.com/microsoft/vscode/issues/111729#issuecomment-737399692)

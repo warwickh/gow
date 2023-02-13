@@ -6,11 +6,11 @@ FROM ${BASE_APP_IMAGE}
 ARG DEBIAN_FRONTEND=noninteractive
 
 ARG REQUIRED_PACKAGES=" \
-#    steam \
-#    libvulkan1 libvulkan1:i386 \
-#    mesa-vulkan-drivers mesa-vulkan-drivers:i386 \
+    steam \
+    libvulkan1 libvulkan1:i386 \
+    mesa-vulkan-drivers mesa-vulkan-drivers:i386 \
     libdbus-1-3 libgtk-3-0 libegl1 libsdl2-2.0-0 \
-#    mupen64plus-qt \
+    mupen64plus-qt \
     nano \
     #apt-utils \
 #    libcanberra-gtk-module \
@@ -25,7 +25,7 @@ ARG REQUIRED_PACKAGES=" \
 #    rtkit \
 #    pulseaudio \
     libnvidia-gl-525 \
-#    libnvidia-gl-525:i386 \
+    libnvidia-gl-525:i386 \
 "
 RUN apt-get update -y && \
     apt-get install gpg gpg-agent -y && \ 
@@ -35,8 +35,8 @@ RUN apt-get update -y && \
 
 RUN apt-get update -y && \
     apt-get install -y --no-install-recommends software-properties-common && \
-#    dpkg --add-architecture i386 && \
-#    add-apt-repository multiverse && \
+    dpkg --add-architecture i386 && \
+    add-apt-repository multiverse && \
     apt-get update -y && \
     apt-get install -y --no-install-recommends $REQUIRED_PACKAGES && \
     apt-get remove -y software-properties-common && \
@@ -57,8 +57,8 @@ RUN apt-get update -qq \
       unzip \
  && rm -rf /var/lib/apt/lists/*
 
-#ADD https://github.com/dh4/mupen64plus-qt/releases/download/1.15/mupen64plus-qt_linux_1.15.tar.gz /tmp
-#RUN tar -xpf /tmp/mupen64plus-qt_linux_1.15.tar.gz -C /usr/games --overwrite
+ADD https://github.com/dh4/mupen64plus-qt/releases/download/1.15/mupen64plus-qt_linux_1.15.tar.gz /tmp
+RUN tar -xpf /tmp/mupen64plus-qt_linux_1.15.tar.gz -C /usr/games --overwrite
 
 # install PCSX2
 RUN apt-get update -qq \

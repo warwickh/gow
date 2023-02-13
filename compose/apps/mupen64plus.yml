@@ -32,9 +32,9 @@ services:
       # If you have permission errors make sure to chomd ${id}:${id} ./local_state
       - /srv/gow/mupen64plus/run:/run/user/1000
       - /srv/games/n64:/n64
-      #- /srv/gow/mupen64plus/plugins:/plugins
-      #- /srv/gow/mupen64plus/data:/data
-      #- /srv/gow/mupen64plus/config:/config
+      - /srv/gow/mupen64plus/plugins:/plugins
+      - /srv/gow/mupen64plus/data:/data
+      - /srv/gow/mupen64plus/config:/config
     ipc: ${SHARED_IPC}  # Needed for MIT-SHM, removing this should cause a performance hit see https://github.com/jessfraz/dockerfiles/issues/359
     env_file:
       - config/common.env
