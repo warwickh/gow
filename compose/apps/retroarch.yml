@@ -27,6 +27,8 @@ services:
       - ${PULSE_SOCKET_HOST}:${PULSE_SOCKET_GUEST}
       # Home directory: retroarch games, downloads, cores etc
       - ${local_state}/:/home/retro/
+      - /srv/games:/home/retro/games
+      - /srv/gow/bios:/home/retro/.config/retroarch/system/pcsx2/bios
       # some emulators need more than 64 MB of shared memory - see https://github.com/libretro/dolphin/issues/222
       # TODO: why shm_size doesn't work ??????
       - type: tmpfs
