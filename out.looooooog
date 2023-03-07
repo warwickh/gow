@@ -1,0 +1,39 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.05kB done
+#1 DONE 0.2s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.3s
+
+#3 [internal] load metadata for ghcr.io/games-on-whales/base-app:edge
+#3 DONE 1.4s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/6] FROM ghcr.io/games-on-whales/base-app:edge@sha256:8e92d81d1db0b6fd98aee291cdb630a915b0288cfed52e1b27a98b5b46b023d4
+#5 resolve ghcr.io/games-on-whales/base-app:edge@sha256:8e92d81d1db0b6fd98aee291cdb630a915b0288cfed52e1b27a98b5b46b023d4
+#5 resolve ghcr.io/games-on-whales/base-app:edge@sha256:8e92d81d1db0b6fd98aee291cdb630a915b0288cfed52e1b27a98b5b46b023d4 0.3s done
+#5 CACHED
+
+#6 [2/6] RUN apt-get update -qq &&  apt-get install -y --no-install-recommends software-properties-common &&  apt-get install gpg gpg-agent -y &&  add-apt-repository ppa:pcsx2-team/pcsx2-daily -y &&  dpkg --add-architecture i386 && &&  add-apt-repository multiverse &&  apt-get update -y &&  apt-get install -y --no-install-recommends      steam     libvulkan1 libvulkan1:i386     mesa-vulkan-drivers mesa-vulkan-drivers:i386     libdbus-1-3 libgtk-3-0 libegl1 libsdl2-2.0-0     mupen64plus-qt     nano     sudo     libnvidia-gl-525     libnvidia-gl-525:i386  &&  apt-get install -qqy --no-install-recommends       $(           apt-cache show pcsx2-unstable             | sed -nE 's/Depends: //p'             | tr ',' $'\n'             | awk '{ print $1 }'             | grep .         )       libcap2-bin       locales       unzip &&  apt-get update -y && apt-get install -qqy --no-install-recommends pcsx2-unstable && apt-get remove -y software-properties-common && apt-get autoremove -y  && rm -rf /var/lib/apt/lists/*
+#6 ...
+
+#7 https://github.com/dh4/mupen64plus-qt/releases/download/1.15/mupen64plus-qt_linux_1.15.tar.gz
+#7 DONE 0.9s
+
+#7 https://github.com/dh4/mupen64plus-qt/releases/download/1.15/mupen64plus-qt_linux_1.15.tar.gz
+#7 CACHED
+
+#4 [internal] load build context
+#4 transferring context: 67B done
+#4 DONE 0.2s
+
+#6 [2/6] RUN apt-get update -qq &&  apt-get install -y --no-install-recommends software-properties-common &&  apt-get install gpg gpg-agent -y &&  add-apt-repository ppa:pcsx2-team/pcsx2-daily -y &&  dpkg --add-architecture i386 && &&  add-apt-repository multiverse &&  apt-get update -y &&  apt-get install -y --no-install-recommends      steam     libvulkan1 libvulkan1:i386     mesa-vulkan-drivers mesa-vulkan-drivers:i386     libdbus-1-3 libgtk-3-0 libegl1 libsdl2-2.0-0     mupen64plus-qt     nano     sudo     libnvidia-gl-525     libnvidia-gl-525:i386  &&  apt-get install -qqy --no-install-recommends       $(           apt-cache show pcsx2-unstable             | sed -nE 's/Depends: //p'             | tr ',' $'\n'             | awk '{ print $1 }'             | grep .         )       libcap2-bin       locales       unzip &&  apt-get update -y && apt-get install -qqy --no-install-recommends pcsx2-unstable && apt-get remove -y software-properties-common && apt-get autoremove -y  && rm -rf /var/lib/apt/lists/*
+#6 0.746 /bin/sh: 1: Syntax error: "&&" unexpected
+#6 ERROR: process "/bin/sh -c apt-get update -qq &&  apt-get install -y --no-install-recommends software-properties-common &&  apt-get install gpg gpg-agent -y &&  add-apt-repository ppa:pcsx2-team/pcsx2-daily -y &&  dpkg --add-architecture i386 && &&  add-apt-repository multiverse &&  apt-get update -y &&  apt-get install -y --no-install-recommends $REQUIRED_PACKAGES &&  apt-get install -qqy --no-install-recommends       $(           apt-cache show pcsx2-unstable             | sed -nE 's/Depends: //p'             | tr ',' $'\\n'             | awk '{ print $1 }'             | grep .         )       libcap2-bin       locales       unzip &&  apt-get update -y && apt-get install -qqy --no-install-recommends pcsx2-unstable && apt-get remove -y software-properties-common && apt-get autoremove -y  && rm -rf /var/lib/apt/lists/*" did not complete successfully: exit code: 2
+------
+ > [2/6] RUN apt-get update -qq &&  apt-get install -y --no-install-recommends software-properties-common &&  apt-get install gpg gpg-agent -y &&  add-apt-repository ppa:pcsx2-team/pcsx2-daily -y &&  dpkg --add-architecture i386 && &&  add-apt-repository multiverse &&  apt-get update -y &&  apt-get install -y --no-install-recommends      steam     libvulkan1 libvulkan1:i386     mesa-vulkan-drivers mesa-vulkan-drivers:i386     libdbus-1-3 libgtk-3-0 libegl1 libsdl2-2.0-0     mupen64plus-qt     nano     sudo     libnvidia-gl-525     libnvidia-gl-525:i386  &&  apt-get install -qqy --no-install-recommends       $(           apt-cache show pcsx2-unstable             | sed -nE 's/Depends: //p'             | tr ',' $'\n'             | awk '{ print $1 }'             | grep .         )       libcap2-bin       locales       unzip &&  apt-get update -y && apt-get install -qqy --no-install-recommends pcsx2-unstable && apt-get remove -y software-properties-common && apt-get autoremove -y  && rm -rf /var/lib/apt/lists/*:
+#6 0.746 /bin/sh: 1: Syntax error: "&&" unexpected
+------

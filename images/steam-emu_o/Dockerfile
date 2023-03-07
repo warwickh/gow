@@ -1,0 +1,77 @@
+ARG BASE_APP_IMAGE
+
+# hadolint ignore=DL3006
+FROM ${BASE_APP_IMAGE}
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+ARG REQUIRED_PACKAGES=" \
+    steam \
+    libvulkan1 libvulkan1:i386 \
+    mesa-vulkan-drivers mesa-vulkan-drivers:i386 \
+    libdbus-1-3 libgtk-3-0 libegl1 libsdl2-2.0-0 \
+    mupen64plus-qt \
+    nano \
+    #apt-utils \
+#    libcanberra-gtk-module \
+#    libcanberra-gtk3-module \
+#    libgl1-mesa-dri \
+#    libgl1-mesa-glx \
+#    libnotify-bin \
+    sudo \
+#    fuse \
+#    libfuse2 \
+#    libnss3 \
+#    rtkit \
+#    pulseaudio \
+    libnvidia-gl-525 \
+    libnvidia-gl-525:i386 \
+"
+RUN apt-get update -y && \
+    apt-get install gpg gpg-agent -y && \ 
+    apt-get install -y --no-install-recommends software-properties-common && \
+    add-apt-repository ppa:pcsx2-team/pcsx2-daily -y
+    #apt-get update -y
+
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends software-properties-common && \
+    dpkg --add-architecture i386 && \
+    add-apt-repository multiverse && \
+    apt-get update -y && \
+    apt-get install -y --no-install-recommends $REQUIRED_PACKAGES && \
+    apt-get remove -y software-properties-common && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update -qq \
+ && apt-get install -qqy --no-install-recommends \
+      $( \
+          apt-cache show pcsx2-unstable \
+            | sed -nE 's/Depends: //p' \
+            | tr ',' $'\n' \
+            | awk '{ print $1 }' \
+            | grep . \
+        ) \
+      libcap2-bin \
+      locales \
+      unzip \
+ && rm -rf /var/lib/apt/lists/*
+
+ADD https://github.com/dh4/mupen64plus-qt/releases/download/1.15/mupen64plus-qt_linux_1.15.tar.gz /tmp
+RUN tar -xpf /tmp/mupen64plus-qt_linux_1.15.tar.gz -C /usr/games --overwrite
+
+# install PCSX2
+RUN apt-get update -qq \
+ && apt-get install -qqy --no-install-recommends pcsx2-unstable \
+ && rm -rf /var/lib/apt/lists/*
+
+COPY --chmod=777 scripts/startup.sh /opt/gow/startup-app.sh
+RUN echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+#USER ${UNAME}
+
+ENV XDG_RUNTIME_DIR=/tmp/.X11-unix
+
+ARG IMAGE_SOURCE
+LABEL org.opencontainers.image.source $IMAGE_SOURCE
+#ENTRYPOINT []
+#CMD /opt/gow/startup-app.sh
