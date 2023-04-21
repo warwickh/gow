@@ -1,0 +1,111 @@
+ARG BASE_APP_IMAGE
+
+# hadolint ignore=DL3006
+FROM ghcr.io/games-on-whales/base-app:wolf-changes
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Install prereqs
+RUN \
+    echo "**** Install Prereqs and latest Mesa ****" && \
+		apt-get update && \
+		apt-get install -y --no-install-recommends software-properties-common gpg-agent wget p7zip-full libvulkan1 mesa-vulkan-drivers fuse libfuse2 && \
+		add-apt-repository ppa:kisak/kisak-mesa && \
+		apt-get update && \
+		apt-get install -y mesa* && \
+	# Cleanup \
+		apt-get autoremove -y && \
+		rm -rf /var/lib/apt/lists/*
+
+# Install Dolphin PPA
+RUN \
+    echo "**** Install Dolphin ****" && \
+        add-apt-repository -y ppa:drewwalton19216801/dolphin-master-cosmic && \
+        apt-get update && \
+        apt-get install -y dolphin-emu-master && \
+    # Cleanup \
+		apt-get autoremove -y && \
+		rm -rf /var/lib/apt/lists/*
+
+# Install ES-DE
+RUN \
+    echo "**** Install ESDE ****" && \
+	    apt-get update && \
+        wget -O /tmp/esde.deb https://gitlab.com/es-de/emulationstation-de/-/package_files/71412450/download && \
+        apt install -y /tmp/esde.deb && \
+		rm /tmp/esde.deb && \
+    # Cleanup \
+		apt-get autoremove -y && \
+		rm -rf /var/lib/apt/lists/*
+
+# Install RetroArch
+RUN \
+    echo "**** Install RetroArch ****" && \
+		apt-get update && \
+		apt-get install -y --no-install-recommends software-properties-common gpg-agent libusb-1.0-0 libglu1-mesa libaio1 libaio-dev && \
+		add-apt-repository ppa:libretro/stable && \
+		apt-get install -y retroarch libretro*  && \
+    # Cleanup \
+		apt-get autoremove -y && \
+		rm -rf /var/lib/apt/lists/*
+		
+# Install PCSX2
+RUN \
+    echo "**** Install PCSX2 ****" && \
+		add-apt-repository -y ppa:pcsx2-team/pcsx2-daily && \
+		apt-get update && \
+		apt-get install -y pcsx2-unstable && \
+    # Cleanup \
+		apt-get autoremove -y && \
+		rm -rf /var/lib/apt/lists/*
+
+# Install XEMU
+RUN \
+    echo "**** Install XEMU ****" && \
+		add-apt-repository -y ppa:mborgerson/xemu && \
+		apt-get update && \
+		apt-get install -y xemu && \
+    # Cleanup \
+		apt-get autoremove -y && \
+		rm -rf /var/lib/apt/lists/*
+	
+# Downloading RPCS3 AppImage 
+RUN \
+    echo "**** Downloading RPCS3 ****" && \
+        mkdir -p /tmp && \
+        cd /tmp && \
+        wget -O rpcs3-emu.AppImage https://rpcs3.net/latest-appimage
+
+# Downloading YUZU AppImage       
+RUN \
+    echo "**** Downloading YUZU ****" && \
+        mkdir -p /tmp && \
+        cd /tmp && \
+        wget -O yuzu-emu.AppImage https://github.com/yuzu-emu/yuzu-mainline/releases/download/mainline-0-1404/yuzu-mainline-20230414-e0895a858.AppImage
+
+# Install WINE
+RUN \
+    echo "**** Install WINE ****" && \
+		dpkg --add-architecture i386 && \
+		apt-get update && \
+		apt-get install -y wine32 wine64 winetricks && \
+    # Cleanup \
+		apt-get remove -y software-properties-common gpg-agent && \
+		apt-get autoremove -y && \
+		rm -rf /var/lib/apt/lists/*
+
+COPY configs/es_systems.xml /cfg/es_systems.xml        
+COPY configs/retroarch.cfg /cfg/retroarch.cfg
+COPY --chmod=777 scripts/custom_scripts/retroarch.sh /cfg/retroarch.sh
+COPY --chmod=777 scripts/custom_scripts/rpcs3.sh /cfg/rpcs3.sh
+COPY --chmod=777 scripts/custom_scripts/yuzu.sh /cfg/yuzu.sh
+COPY --chmod=777 scripts/custom_scripts/xemu.sh /cfg/xemu.sh
+COPY --chmod=777 scripts/custom_scripts/pcsx2.sh  /cfg/pcsx2.sh
+COPY --chmod=777 scripts/custom_scripts/dolphin.sh  /cfg/dolphin.sh       
+COPY --chmod=777 scripts/startup.sh /opt/gow/startup-app.sh
+COPY --chmod=777 scripts/startup-es.sh /opt/gow/startup-es.sh
+
+ENV XDG_RUNTIME_DIR=/tmp/.X11-unix
+
+ARG IMAGE_SOURCE
+LABEL org.opencontainers.image.source $IMAGE_SOURCE

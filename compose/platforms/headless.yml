@@ -6,14 +6,14 @@
 
 services:
   xorg:
-    image: ghcr.io/games-on-whales/xorg:edge
+    #image: ghcr.io/games-on-whales/xorg:edge
     # Most people will probably prefer to pull the pre-built images, but if you
     # prefer to build yourself you can uncomment these lines
-#   build:
-#     context: ./images/xorg
-#     args:
-#       BASE_IMAGE: ${BUILD_BASE_IMAGE}
-#       BASE_APP_IMAGE: ${BUILD_BASE_APP_IMAGE}
+    build:
+      context: ./images/xorg
+      args:
+        BASE_IMAGE: ${BUILD_BASE_IMAGE}
+        BASE_APP_IMAGE: ${BUILD_BASE_APP_IMAGE}
     runtime: ${DOCKER_RUNTIME}
     network_mode: ${UDEVD_NETWORK}
     privileged: true

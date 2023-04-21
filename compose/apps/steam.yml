@@ -31,6 +31,8 @@ services:
       # 64MB of free space in temporary directory
       # (https://github.com/microsoft/vscode/issues/111729#issuecomment-737399692)
       # TODO: why shm_size doesn't work ??????
+      - /srv/games:/home/retro/games
+      - /srv/gow/bios:/bios
       - type: tmpfs
         target: /dev/shm
         tmpfs:

@@ -13,6 +13,11 @@ ARG REQUIRED_PACKAGES=" \
     mupen64plus-qt \
     nano \
     sudo \
+    lsof \
+    lsb-release \
+    xdg-user-dirs \
+    xdg-utils \
+    libxkbcommon-x11-dev \
 #    libnvidia-gl-525 \
 #    libnvidia-gl-525:i386 \
 "
@@ -61,6 +66,11 @@ COPY --chmod=777 scripts/startup.sh /opt/gow/startup-app.sh
 RUN echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 ENV XDG_RUNTIME_DIR=/tmp/.X11-unix
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale LANG=en_US.UTF-8
+
+ENV LANG en_US.UTF-8
 
 ARG IMAGE_SOURCE
 LABEL org.opencontainers.image.source $IMAGE_SOURCE
