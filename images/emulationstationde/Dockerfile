@@ -16,6 +16,27 @@ RUN \
 		apt-get autoremove -y && \
 		rm -rf /var/lib/apt/lists/*
 
+# Install Dolphin PPA
+RUN \
+    echo "**** Install Dolphin ****" && \
+        #add-apt-repository -y ppa:drewwalton19216801/dolphin-master-cosmic && \
+        apt-get update && \
+        apt-get install -y dolphin-emu && \
+    # Cleanup \
+		apt-get autoremove -y && \
+		rm -rf /var/lib/apt/lists/*
+
+# Install WINE
+RUN \
+    echo "**** Install WINE ****" && \
+		dpkg --add-architecture i386 && \
+		apt-get update && \
+		apt-get install -y wine32 wine64 winetricks && \
+    # Cleanup \
+		apt-get remove -y software-properties-common gpg-agent && \
+		apt-get autoremove -y && \
+		rm -rf /var/lib/apt/lists/*
+
 # Downloading ES-DE AppImage
 RUN \
     echo "**** Downloading ESDE AppImage ****" && \
@@ -86,6 +107,8 @@ COPY configs/ /cfg/
 COPY --chmod=777 scripts/custom_scripts/ /cfg/custom_scripts/
 COPY --chmod=777 scripts/startup.sh /etc/cont-init.d/setup-de.sh
 COPY --chmod=777 scripts/startup-es.sh /opt/gow/startup-app.sh
+
+ENV XDG_RUNTIME_DIR=/tmp/.X11-unix
 
 ARG IMAGE_SOURCE
 LABEL org.opencontainers.image.source $IMAGE_SOURCE
